@@ -54,7 +54,7 @@ A `.mochypck` file is a **compiled binary container** designed for instant O(1) 
 
 ## 2. Capability Bitmask
 
-Defined in `:modules:pack` (`PackCapability`):
+Defined in `:pack-format` (`PackCapability`):
 
 | Bit | Wire Name | Label | Description |
 |---:|---|---|---|
@@ -112,31 +112,31 @@ When no pack is active, every gateway is empty and Mochy operates cleanly as an 
 
 ## 5. Compiler CLI (`mochypck`)
 
-The standalone compiler lives in `../modulestuff` (`:compiler`). Commands:
+The CLI lives in `:compiler`. Build it with `./gradlew :compiler:installDist`, or run any command through `./gradlew :compiler:run --args="..."`.
 
 ```bash
-# Scaffold a new pack.json
-./gradlew :compiler:run --args="init --id my.pack --name \"My Pack\" --out pack.json"
+# Make a folder with a starter pack.json and an assets/ folder
+mochypck init my-pack
 
 # Compile a pack.json + built provider APK into a verified .mochypck
-./gradlew :compiler:run --args="compile --spec pack.json --apk app-debug.apk --out my-pack.mochypck"
+mochypck compile --spec my-pack/pack.json --apk app-release.apk --out my-pack.mochypck
 
 # Inspect header & compiled index in O(1)
-./gradlew :compiler:run --args="inspect my-pack.mochypck"
+mochypck inspect my-pack.mochypck
 
 # Full cryptographic SHA-256 verification of header, index, payload, and every file
-./gradlew :compiler:run --args="verify my-pack.mochypck"
+mochypck verify my-pack.mochypck
 
 # Extract payload contents safely into a directory
-./gradlew :compiler:run --args="extract my-pack.mochypck --out ./unpacked"
+mochypck extract my-pack.mochypck --out ./unpacked
 ```
 
 ### Building `mochy-essentials.mochypck`
 
-The reference pack bundling all extracted providers (InnerTubeX + Legacy InnerTube with adaptive client health, 14 lyrics providers, Apple Music / Deezer / YouTube covers & artist images, Apple Music / Monochrome-Tidal / Spotify canvas + artist videos, and Musixmatch / Genius / Wikipedia / Apple Music metadata) builds in one command from `../modulestuff`:
+The reference pack bundling all extracted providers (InnerTubeX + Legacy InnerTube with adaptive client health, 14 lyrics providers, Apple Music / Deezer / YouTube covers & artist images, Apple Music / Monochrome-Tidal / Spotify canvas + artist videos, and Musixmatch / Genius / Wikipedia / Apple Music metadata) lives in its own project, `mochy-essentials`, which builds against this SDK. From that project:
 
 ```bash
-./gradlew :packs:mochy-essentials:apk:compileMochyPackDebug
+./gradlew :apk:compileMochyPackDebug
 # Output: build/outputs/mochy-essentials-debug.mochypck
 ```
 
@@ -144,6 +144,6 @@ The reference pack bundling all extracted providers (InnerTubeX + Legacy InnerTu
 
 ## 6. Algorithm Improvements (BYOS v4)
 
-- **Multi-signal `TrackMatcher` (`:modules:api`)**: Unicode NFKD diacritic folding, blended token F1 + character bigram Dice + Levenshtein title similarity, multi-artist splitting with lead-artist weighting, album match bonus, Gaussian duration decay, and expanded edition/version conflict guards (`instrumental`, `sped up`, `slowed`, `karaoke`, `nightcore`, `8d`, `acapella`, `live`, `remix`, `acoustic`).
+- **Multi-signal `TrackMatcher` (`:api`)**: Unicode NFKD diacritic folding, blended token F1 + character bigram Dice + Levenshtein title similarity, multi-artist splitting with lead-artist weighting, album match bonus, Gaussian duration decay, and expanded edition/version conflict guards (`instrumental`, `sped up`, `slowed`, `karaoke`, `nightcore`, `8d`, `acapella`, `live`, `remix`, `acoustic`).
 - **Adaptive Legacy InnerTube Client Health (`AdaptiveClientHealth` in `mochy-essentials`)**: EWMA latency + success-rate scoring combined with exponential-backoff circuit breaking (including heightened penalties for bot-check `LOGIN_REQUIRED` responses) so failing clients are bypassed quickly while healthy clients rise to the front automatically.
 - **Unified Cover & Genre Matching**: Cover and metadata providers inside `mochy-essentials` rank candidates via `TrackMatcher` rather than naive string prefix heuristics.

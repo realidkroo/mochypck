@@ -8,3 +8,7 @@ local.properties
 *.keystore
 *.jks
 *.mochypck
+
+# ai tool files, kept local like in mochy
+.claude/
+CLAUDE.md

@@ -1,0 +1,23 @@
+{
+  "id": "example.starter",
+  "name": "Starter Source Pack",
+  "version": "1.0.0",
+  "versionCode": 1,
+  "description": "Minimal example .mochypck showing how anyone can build a custom lyrics and cover provider for Mochy BYOS.",
+  "author": "your-name",
+  "sourceUrl": "https://github.com/realidkroo/mochypck",
+  "minAppVersion": "9.0.0",
+  "assetsDir": "assets",
+  "providers": [
+    {
+      "id": "example.starter_lyrics",
+      "name": "Starter Lyrics & Covers",
+      "displayName": "Starter Provider",
+      "description": "Example provider implementing LyricsModule and CoverModule against Mochy Module API v4.",
+      "capabilities": ["lyrics", "cover"],
+      "entryClass": "com.example.starterpack.StarterProvider",
+      "defaultPriority": 100,
+      "enabledByDefault": true
+    }
+  ]
+}
